@@ -1,0 +1,20 @@
+{
+  "name": "yaneuraou.wasm",
+  "version": "0.1.0",
+  "description": "WebAssembly port of the strong shogi engine YaneuraOu",
+  "keywords": ["shogi","emscripten", "webassembly"],
+  "author": "Yuta Okumura",
+  "license": "GPL-3.0",
+  "repository": "github:arashigaoka/YaneuraOu.wasm",
+  "homepage": "https://arashigaoka/YaneuraOu.wasm",
+  "main": "yaneuraou.js",
+  "files": [
+    "Copying.txt",
+    "yaneuraou.js",
+    "yaneuraou.wasm",
+    "yaneuraou.worker.js"
+  ],
+  "scripts": {
+    "prepare": "cd source && make clean tournament && cd .. && cat source/yaneuraou.js > yaneuraou.js && cp source/yaneuraou.wasm ."
+  }
+}

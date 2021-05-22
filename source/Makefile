@@ -46,13 +46,13 @@ YANEURAOU_EDITION = YANEURAOU_ENGINE_NNUE
 
 #TARGET_CPU = AVX512VNNI
 #TARGET_CPU = AVX512
-TARGET_CPU = AVX2
-#TARGET_CPU = SSE42
+# TARGET_CPU = AVX2
+# TARGET_CPU = SSE42
 #TARGET_CPU = SSE41
 #TARGET_CPU = SSSE3
 #TARGET_CPU = SSE2
 #TARGET_CPU = NO_SSE
-#TARGET_CPU = OTHER
+TARGET_CPU = OTHER
 #TARGET_CPU = ZEN1
 #TARGET_CPU = ZEN2
 
@@ -64,8 +64,9 @@ DEBUG = OFF
 
 # 使用するコンパイラ (compiler)
 # ※ clangでコンパイルしたほうがgccより数%速いっぽい。
-#COMPILER = g++
-COMPILER = clang++
+# COMPILER = g++
+# COMPILER = clang++
+COMPILER = em++
 
 
 # エンジンの表示名 (engine displayname)
@@ -80,7 +81,8 @@ COMPILER = clang++
 
 
 # 標準的なコンパイルオプション (standard compile options)
-CPPFLAGS   = -std=c++17 -fno-exceptions -fno-rtti -Wextra -Ofast -MMD -MP -fpermissive
+# CPPFLAGS   = -std=c++17 -fno-exceptions -fno-rtti -Wextra -Ofast -MMD -MP -fpermissive
+CPPFLAGS   = -std=c++17 -fno-exceptions -fno-rtti -Wextra -MMD -MP -fpermissive
 WCPPFLAGS  =
 LDFLAGS  = $(EXTRA_LDFLAGS)
 LIBS     =
@@ -88,6 +90,8 @@ INCLUDE  = # -I../include
 
 # makeするときにCPPFLAGSを追加で指定したいときはこれを用いる。
 EXTRA_CPPFLAGS =
+
+EMFLAGS =
 
 # YANEURAOU_EDITION = YANEURAOU_ENGINE_MATERIALのときに指定できる、評価関数の通し番号
 #  1 : 普通の駒得のみの評価関数
@@ -144,16 +148,33 @@ else
 		# LDFLAGS += -lstdc++fs
 
 	endif
+  ifneq (,$(findstring em++,$(COMPILER)))
+
+		CPPFLAGS += -Wno-unused-parameter
+
+	  EMFLAGS += -s MODULARIZE=1 -s EXPORT_NAME="YaneuraOu" -s ENVIRONMENT=web,worker,node -s
+	  # EMFLAGS += -s MODULARIZE=1 -s EXPORT_NAME="YaneuraOu" -s ENVIRONMENT=web,worker,node -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=1
+	  EMFLAGS += -s EXIT_RUNTIME=0 -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']" --pre-js pre.js
+	  EMFLAGS += -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=71303168 -s MAXIMUM_MEMORY=2147483648
+	  EMFLAGS += -s FILESYSTEM=0 --closure 1
+	  EMFLAGS += -s STRICT=1 -s ASSERTIONS=0
+	  CPPFLAGS += $(EMFLAGS)
+	endif
 endif
 
+
 TARGETDIR = .
-ifeq ($(OS),Windows_NT)
-	CPPFLAGS += $(WCPPFLAGS)
-	LDFLAGS += -static -Wl,--stack,25000000
-	TARGET = $(TARGETDIR)/YaneuraOu-by-gcc.exe
+ifneq (,$(findstring em++,$(COMPILER)))
+  TARGET = $(TARGETDIR)/yaneuraou.js
 else
-	CPPFLAGS += -D_LINUX
-	TARGET = $(TARGETDIR)/YaneuraOu-by-gcc
+  ifeq ($(OS),Windows_NT)
+	  CPPFLAGS += $(WCPPFLAGS)
+	  LDFLAGS += -static -Wl,--stack,25000000
+	  TARGET = $(TARGETDIR)/YaneuraOu-by-gcc.exe
+  else
+	  CPPFLAGS += -D_LINUX
+	  TARGET = $(TARGETDIR)/YaneuraOu-by-gcc
+  endif
 endif
 
 # リンク時最適化。

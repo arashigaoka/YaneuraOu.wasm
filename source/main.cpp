@@ -30,11 +30,11 @@ int main(int argc, char* argv[])
 
 	// USIコマンドの応答部
 
-	USI::loop(argc, argv);
+	// USI::loop(argc, argv);
 
 	// 生成して、待機させていたスレッドの停止
 
-	Threads.set(0);
+	// Threads.set(0);
 
 	return 0;
 }
