@@ -8,7 +8,7 @@ ThreadPool Threads;		// Global object
 Thread::Thread(size_t n) : idx(n) , stdThread(&Thread::idle_loop, this)
 {
 	// スレッドはsearching == trueで開始するので、このままworkerのほう待機状態にさせておく
-	wait_for_search_finished();
+	// wait_for_search_finished();
 }
 
 // std::threadの終了を待つ
@@ -86,7 +86,6 @@ void Thread::idle_loop() {
 	{
 		std::unique_lock<std::mutex> lk(mutex);
 		searching = false;
-		threadStarted = true;
 		cv.notify_one(); // 他のスレッドがこのスレッドを待機待ちしてるならそれを起こす
 		cv.wait(lk, [&] { return searching; });
 
@@ -103,6 +102,9 @@ void Thread::idle_loop() {
 // スレッド数を変更する。
 void ThreadPool::set(size_t requested)
 {
+	if (size() == requested)
+	  return;
+
 	if (size() > 0) { // いったんすべてのスレッドを解体(NUMA対策)
 		main()->wait_for_search_finished();
 
@@ -114,7 +116,7 @@ void ThreadPool::set(size_t requested)
 		push_back(new MainThread(0));
 
 		while (size() < requested)
-			push_back(new Thread(size()));
+          push_back(size() ? new Thread(size()) : new MainThread(0));
 		clear();
 
 		// Reallocate the hash with the new threadpool size

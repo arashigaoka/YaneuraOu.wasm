@@ -1194,20 +1194,9 @@ END:
 EMSCRIPTEN_KEEPALIVE extern "C" int usi_command(const char *c_cmd) {
   std::string cmd(c_cmd);
 
-  static bool initialized = false;
   static Position pos;
   string token;
   static StateListPtr states(new StateList(1));;
-
-  if (!initialized) {
-			pos.set_hirate(&states->back(),Threads.main());
-      initialized = true;
-  }
-
-  for (Thread* th : Threads) {
-      if (!th->threadStarted)
-          return 1;
-  }
 
       istringstream is(cmd);
 
@@ -1228,7 +1217,7 @@ EMSCRIPTEN_KEEPALIVE extern "C" int usi_command(const char *c_cmd) {
       else if (token == "usi")
           sync_cout << "id name " << engine_info()
                     << "\n"       << Options
-                    << "\nuciok"  << sync_endl;
+                    << "\nusiok"  << sync_endl;
 
       else if (token == "setoption")  setoption_cmd(is);
       else if (token == "go")         go_cmd(pos, is, states);
