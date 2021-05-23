@@ -23,7 +23,7 @@
 
   Module["terminate"] = function () {
     quit = true;
-    // PThread.terminateAllThreads();
+    PThread.terminateAllThreads();
   };
 
   // Command queue

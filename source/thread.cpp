@@ -64,8 +64,6 @@ void Thread::wait_for_search_finished()
 // 探索するときのmaster,slave用のidle_loop。探索開始するまで待っている。
 void Thread::idle_loop() {
 
-	threadStarted = true;
-
 	// NUMA環境では、8スレッド未満だと異なるNUMAに割り振られることがあり、パフォーマンス激減するのでその回避策。
 	// ・8スレッド未満のときはOSに任せる
 	// ・8スレッド以上のときは、自前でbindThisThreadを行なう。
@@ -88,6 +86,7 @@ void Thread::idle_loop() {
 	{
 		std::unique_lock<std::mutex> lk(mutex);
 		searching = false;
+		threadStarted = true;
 		cv.notify_one(); // 他のスレッドがこのスレッドを待機待ちしてるならそれを起こす
 		cv.wait(lk, [&] { return searching; });
 

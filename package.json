@@ -15,6 +15,6 @@
     "yaneuraou.worker.js"
   ],
   "scripts": {
-    "prepare": "cd source && make clean tournament && cd .. && cat source/yaneuraou.js > yaneuraou.js && cp source/yaneuraou.wasm ."
+    "prepare": "cd source && make clean tournament && cd .. && cp source/yaneuraou.js source/yaneuraou.worker.js source/yaneuraou.wasm source/yaneuraou.data ."
   }
 }
