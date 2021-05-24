@@ -64,6 +64,8 @@ void Thread::wait_for_search_finished()
 // 探索するときのmaster,slave用のidle_loop。探索開始するまで待っている。
 void Thread::idle_loop() {
 
+  sync_cout << "idle_loop" << sync_endl;
+
 	// NUMA環境では、8スレッド未満だと異なるNUMAに割り振られることがあり、パフォーマンス激減するのでその回避策。
 	// ・8スレッド未満のときはOSに任せる
 	// ・8スレッド以上のときは、自前でbindThisThreadを行なう。
@@ -86,6 +88,7 @@ void Thread::idle_loop() {
 	{
 		std::unique_lock<std::mutex> lk(mutex);
 		searching = false;
+		threadStarted = true;
 		cv.notify_one(); // 他のスレッドがこのスレッドを待機待ちしてるならそれを起こす
 		cv.wait(lk, [&] { return searching; });
 
@@ -102,21 +105,22 @@ void Thread::idle_loop() {
 // スレッド数を変更する。
 void ThreadPool::set(size_t requested)
 {
-	if (size() == requested)
-	  return;
+  sync_cout << size() << sync_endl;
+  sync_cout << requested << sync_endl;
 
 	if (size() > 0) { // いったんすべてのスレッドを解体(NUMA対策)
 		main()->wait_for_search_finished();
 
-		while (size() > 0)
-			delete back(), pop_back();
+		// while (size() > 0)
+		// 	delete back(), pop_back();
 	}
 
 	if (requested > 0) { // 要求された数だけのスレッドを生成
-		push_back(new MainThread(0));
+		// push_back(new MainThread(0));
 
 		while (size() < requested)
-          push_back(size() ? new Thread(size()) : new MainThread(0));
+      push_back(size() ? new Thread(size()) : new MainThread(0));
+			// push_back(new Thread(size()));
 		clear();
 
 		// Reallocate the hash with the new threadpool size

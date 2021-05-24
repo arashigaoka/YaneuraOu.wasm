@@ -136,7 +136,8 @@ void TranspositionTable::clear()
 #if !defined(EVAL_LEARN)
 	// 進捗を表示しながら並列化してゼロクリア
 	// Stockfishのここにあったコードは、独自の置換表を実装した時にも使いたいため、tt.cppに移動させた。
-	Tools::memclear("USI_Hash" , table, size);
+	// Tools::memclear("USI_Hash" , table, size);
+	std::memset(table, 0, size);
 #else
 	// LEARN版のときは、
 	// 単一スレッドでメモリをクリアする。(他のスレッドは仕事をしているので..)

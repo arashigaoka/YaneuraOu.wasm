@@ -767,30 +767,30 @@ namespace Tools
 
 		// マルチスレッドで並列化してクリアする。
 
-		std::vector<std::thread> threads;
+		// std::vector<std::thread> threads;
 
-		for (size_t idx = 0; idx < thread_num; idx++)
-		{
-			threads.push_back(std::thread([table, size, thread_num, idx]() {
+		// for (size_t idx = 0; idx < thread_num; idx++)
+		// {
+		// 	threads.push_back(std::thread([table, size, thread_num, idx]() {
 
-				// NUMA環境では、bindThisThread()を呼び出しておいたほうが速くなるらしい。
+		// 		// NUMA環境では、bindThisThread()を呼び出しておいたほうが速くなるらしい。
 
-				// Thread binding gives faster search on systems with a first-touch policy
-				if (thread_num > 8)
-					WinProcGroup::bindThisThread(idx);
+		// 		// Thread binding gives faster search on systems with a first-touch policy
+		// 		if (thread_num > 8)
+		// 			WinProcGroup::bindThisThread(idx);
 
-				// それぞれのスレッドがhash tableの各パートをゼロ初期化する。
-				const size_t stride = size / thread_num,
-					start = stride * idx,
-					len = idx != thread_num - 1 ?
-					stride : size - start;
+		// 		// それぞれのスレッドがhash tableの各パートをゼロ初期化する。
+		// 		const size_t stride = size / thread_num,
+		// 			start = stride * idx,
+		// 			len = idx != thread_num - 1 ?
+		// 			stride : size - start;
 
-				std::memset((uint8_t*)table + start, 0, len);
-				}));
-		}
+		// 		std::memset((uint8_t*)table + start, 0, len);
+		// 		}));
+		// }
 
-		for (std::thread& th : threads)
-			th.join();
+		// for (std::thread& th : threads)
+		// 	th.join();
 
 		if (name_ != nullptr)
 			sync_cout << "info string " + std::string(name_) + " : Finish clearing." << sync_endl;

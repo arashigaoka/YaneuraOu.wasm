@@ -118,6 +118,8 @@ public:
 	//
 	Depth rootDepth, completedDepth;
 
+  std::atomic_bool threadStarted;
+
 #if defined(USE_MOVE_PICKER)
 	// 近代的なMovePickerではオーダリングのために、スレッドごとにhistoryとcounter movesなどのtableを持たないといけない。
 	CounterMoveHistory counterMoves;

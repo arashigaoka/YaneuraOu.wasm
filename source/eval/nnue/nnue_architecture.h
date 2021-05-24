@@ -30,7 +30,8 @@
 #else
 
 // どれも定義されていなかったので標準NNUE型にしておく。
-#include "architectures/halfkp_256x2-32-32.h"
+// #include "architectures/halfkp_256x2-32-32.h"
+#include "architectures/k-p_256x2-32-32.h"
 
 #endif
 

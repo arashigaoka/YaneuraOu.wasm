@@ -323,31 +323,32 @@ void is_ready(bool skipCorruptCheck)
 	// この関数を抜ける時に立つフラグ(スレッドを停止させる用)
 	auto thread_end = false;
 
-	// 定期的な改行送信用のスレッド
-	auto th = std::thread([&] {
-		// スレッドが起動した
-		thread_started = true;
 
-		int count = 0;
-		while (!thread_end)
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			if (++count >= 50 /* 5秒 */)
-			{
-				count = 0;
-				sync_cout << sync_endl; // 改行を送信する。	
+	// // 定期的な改行送信用のスレッド
+	// auto th = std::thread([&] {
+	// 	// スレッドが起動した
+	// 	thread_started = true;
 
-				// 定跡の読み込み部などで"info string.."で途中経過を出力する場合、
-				// sync_cout ～ sync_endlを用いて送信しないと、この改行を送るタイミングとかち合うと
-				// 変なところで改行されてしまうので注意。
-			}
-		}
-		});
-	SCOPE_EXIT({ thread_end = true; th.join(); });
+	// 	int count = 0;
+	// 	while (!thread_end)
+	// 	{
+	// 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	// 		if (++count >= 50 /* 5秒 */)
+	// 		{
+	// 			count = 0;
+	// 			sync_cout << sync_endl; // 改行を送信する。	
+
+	// 			// 定跡の読み込み部などで"info string.."で途中経過を出力する場合、
+	// 			// sync_cout ～ sync_endlを用いて送信しないと、この改行を送るタイミングとかち合うと
+	// 			// 変なところで改行されてしまうので注意。
+	// 		}
+	// 	}
+	// 	});
+	// SCOPE_EXIT({ thread_end = true; th.join(); });
 
 	// スレッド起動待ち
-	while (!thread_started)
-		Tools::sleep(100);
+	// while (!thread_started)
+	// 	Tools::sleep(100);
 
 	// --- Keep Alive的な処理ここまで ---
 
@@ -1197,6 +1198,11 @@ EMSCRIPTEN_KEEPALIVE extern "C" int usi_command(const char *c_cmd) {
   static Position pos;
   string token;
   static StateListPtr states(new StateList(1));;
+
+  for (Thread* th : Threads) {
+      if (!th->threadStarted)
+          return 1;
+  }
 
       istringstream is(cmd);
 

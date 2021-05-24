@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
 {
 	// --- 全体的な初期化
 
+  std::cout << "initialize" << std::endl;
 	CommandLine::init(argc,argv);
 	USI::init(Options);
 	Bitboards::init();
@@ -36,5 +37,6 @@ int main(int argc, char* argv[])
 
 	// Threads.set(0);
 
+  std::cout << "initialize end" << std::endl;
 	return 0;
 }
