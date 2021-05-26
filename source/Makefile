@@ -82,7 +82,7 @@ COMPILER = em++
 
 # 標準的なコンパイルオプション (standard compile options)
 # CPPFLAGS   = -std=c++17 -fno-exceptions -fno-rtti -Wextra -Ofast -MMD -MP -fpermissive
-CPPFLAGS   = -std=c++17 -fno-exceptions -fno-rtti -Wextra -MMD -MP -fpermissive -g3
+CPPFLAGS   = -std=c++17 -fno-exceptions -fno-rtti -Wextra -MMD -MP -fpermissive -O3
 WCPPFLAGS  =
 LDFLAGS  = $(EXTRA_LDFLAGS)
 LIBS     =
@@ -152,11 +152,11 @@ else
 
 		CPPFLAGS += -Wno-unused-parameter
 
-	  EMFLAGS += -s MODULARIZE=1 -s EXPORT_NAME="YaneuraOu" -s ENVIRONMENT=web,worker,node -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=1 -s PTHREAD_POOL_SIZE_STRICT=2
-	  EMFLAGS += -s EXIT_RUNTIME=0 -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']" --pre-js pre.js --preload-file eval/nn.bin -s ALLOW_BLOCKING_ON_MAIN_THREAD=0
-	  EMFLAGS += -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=268435456 -s MAXIMUM_MEMORY=2147483648
+	  EMFLAGS += -s MODULARIZE=1 -s EXPORT_NAME="YaneuraOu" -s ENVIRONMENT=web,worker,node -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=1
+	  EMFLAGS += -s EXIT_RUNTIME=0 -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']" --pre-js pre.js --preload-file eval/nn.bin
+	  EMFLAGS += -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=71303168 -s MAXIMUM_MEMORY=2147483648
 	  EMFLAGS += -s --closure 1
-	  EMFLAGS += -s STRICT=1 -s ASSERTIONS=1
+	  EMFLAGS += -s STRICT=1 -s ASSERTIONS=0
 	  CPPFLAGS += $(EMFLAGS)
 	endif
 endif

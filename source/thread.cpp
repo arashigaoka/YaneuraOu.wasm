@@ -64,8 +64,6 @@ void Thread::wait_for_search_finished()
 // 探索するときのmaster,slave用のidle_loop。探索開始するまで待っている。
 void Thread::idle_loop() {
 
-  sync_cout << "idle_loop" << sync_endl;
-
 	// NUMA環境では、8スレッド未満だと異なるNUMAに割り振られることがあり、パフォーマンス激減するのでその回避策。
 	// ・8スレッド未満のときはOSに任せる
 	// ・8スレッド以上のときは、自前でbindThisThreadを行なう。
@@ -74,11 +72,11 @@ void Thread::idle_loop() {
 	// ・fishtestを8スレッドで行うから、9以上にしてくれとのことらしい。
 	// cf. NUMA for 9 threads or more : https://github.com/official-stockfish/Stockfish/commit/bc3b148d5712ef9ea00e74d3ff5aea10a4d3cabe
 
-#if !defined(FORCE_BIND_THIS_THREAD)
-	// "Threads"というオプションがない時は、強制的にbindThisThread()しておいていいと思う。(使うスレッド数がここではわからないので..)
-	if (Options.count("Threads")==0 || Options["Threads"] > 8)
-#endif
-		WinProcGroup::bindThisThread(idx);
+// #if !defined(FORCE_BIND_THIS_THREAD)
+// 	// "Threads"というオプションがない時は、強制的にbindThisThread()しておいていいと思う。(使うスレッド数がここではわからないので..)
+// 	if (Options.count("Threads")==0 || Options["Threads"] > 8)
+// #endif
+// 		WinProcGroup::bindThisThread(idx);
 		// このifを有効にすると何故かNUMA環境のマルチスレッド時に弱くなることがある気がする。
 		// (長い時間対局させ続けると安定するようなのだが…)
 		// 上の投稿者と条件が何か違うのだろうか…。
@@ -105,14 +103,18 @@ void Thread::idle_loop() {
 // スレッド数を変更する。
 void ThreadPool::set(size_t requested)
 {
+
   sync_cout << size() << sync_endl;
   sync_cout << requested << sync_endl;
+
+  if (size() == requested)
+      return;
 
 	if (size() > 0) { // いったんすべてのスレッドを解体(NUMA対策)
 		main()->wait_for_search_finished();
 
-		// while (size() > 0)
-		// 	delete back(), pop_back();
+		while (size() > requested)
+			delete back(), pop_back();
 	}
 
 	if (requested > 0) { // 要求された数だけのスレッドを生成
