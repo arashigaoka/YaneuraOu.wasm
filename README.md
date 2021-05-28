@@ -31,7 +31,9 @@ Only Firefox nightly
 
 Assuming em++ (^2.0.21) is available:
 
+```
 npm run-script prepare
+```
 
 # Usage
 

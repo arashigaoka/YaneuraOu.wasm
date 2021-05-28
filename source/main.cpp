@@ -15,7 +15,6 @@ int main(int argc, char* argv[])
 {
 	// --- 全体的な初期化
 
-  std::cout << "initialize" << std::endl;
 	CommandLine::init(argc,argv);
 	USI::init(Options);
 	Bitboards::init();
@@ -29,14 +28,10 @@ int main(int argc, char* argv[])
 	//Search::clear();
 	Eval::init();
 
-	// USIコマンドの応答部
-
+  // YaneuraOu.wasm
+	// ここでループしてしまうと、ブラウザのメインスレッドもブロックされてしまうので、コメントアウト
 	// USI::loop(argc, argv);
-
-	// 生成して、待機させていたスレッドの停止
-
 	// Threads.set(0);
 
-  std::cout << "initialize end" << std::endl;
 	return 0;
 }

@@ -119,7 +119,7 @@ inline uint64_t PEXT64(uint64_t a, uint64_t b) { return pext(a, b); }
 #define POPCNT32(a) _mm_popcnt_u32(a)
 #define POPCNT64(a) _mm_popcnt_u64(a)
 #else
-// #define POPCNT32(a) _mm_popcnt_u32((u32)(a))
+// YaneuraOu.wasm WASM SIMDを使用するため、__builtin_popcountをcallするよう修正
 // https://github.com/emscripten-core/emscripten/issues/10634
 #define POPCNT32(a) __builtin_popcount((u32)(a))
 // 32bit環境では32bitのpop_count 2回でemulation。
