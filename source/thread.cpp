@@ -7,6 +7,18 @@ ThreadPool Threads;		// Global object
 
 Thread::Thread(size_t n) : idx(n) , stdThread(&Thread::idle_loop, this)
 {
+	// yaneuraou.wasm
+	// wait_for_search_finished すると、ブラウザのメインスレッドをブロックしデッドロックが発生するため、コメントアウト。
+	//
+	// 新しいスレッドが cv を設定するのを待ってから、ブラウザに処理をパスしたいが、
+	// 新しいスレッド用のworkerを作成するためには、いったんブラウザに処理をパスする必要がある。
+	//
+	// https://bugzilla.mozilla.org/show_bug.cgi?id=1049079
+	//
+	// threadStarted という変数を設けて全てのスレッドが開始するまでリトライするようにする
+	//
+	// 参考：https://github.com/niklasf/stockfish.wasm/blob/a022fa1405458d1bc1ba22fe813bace961859102/src/thread.cpp#L38
+
 	// スレッドはsearching == trueで開始するので、このままworkerのほう待機状態にさせておく
 	// wait_for_search_finished();
 }
@@ -72,11 +84,11 @@ void Thread::idle_loop() {
 	// ・fishtestを8スレッドで行うから、9以上にしてくれとのことらしい。
 	// cf. NUMA for 9 threads or more : https://github.com/official-stockfish/Stockfish/commit/bc3b148d5712ef9ea00e74d3ff5aea10a4d3cabe
 
-// #if !defined(FORCE_BIND_THIS_THREAD)
-// 	// "Threads"というオプションがない時は、強制的にbindThisThread()しておいていいと思う。(使うスレッド数がここではわからないので..)
-// 	if (Options.count("Threads")==0 || Options["Threads"] > 8)
-// #endif
-// 		WinProcGroup::bindThisThread(idx);
+#if !defined(FORCE_BIND_THIS_THREAD)
+	// "Threads"というオプションがない時は、強制的にbindThisThread()しておいていいと思う。(使うスレッド数がここではわからないので..)
+	if (Options.count("Threads")==0 || Options["Threads"] > 8)
+#endif
+		WinProcGroup::bindThisThread(idx);
 		// このifを有効にすると何故かNUMA環境のマルチスレッド時に弱くなることがある気がする。
 		// (長い時間対局させ続けると安定するようなのだが…)
 		// 上の投稿者と条件が何か違うのだろうか…。

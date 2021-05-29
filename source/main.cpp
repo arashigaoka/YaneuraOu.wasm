@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	//Search::clear();
 	Eval::init();
 
-  // YaneuraOu.wasm
+  // yaneuraOu.wasm
 	// ここでループしてしまうと、ブラウザのメインスレッドがブロックされてしまうため、コメントアウト
 
 	// USI::loop(argc, argv);

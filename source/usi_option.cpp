@@ -31,6 +31,12 @@ namespace USI {
 	void init(OptionsMap& o)
 	{
 		// Hash上限。32bitモードなら2GB、64bitモードなら33TB
+
+		// yaneuraou.wasm
+		// メモリの調整
+		// stockfish.wasmの数値を基本的に使用している
+		//
+
 		// constexpr int MaxHashMB = Is64Bit ? 33554432 : 2048;
 		constexpr int MaxHashMB = 1024;
 
@@ -46,8 +52,12 @@ namespace USI {
 		// そもそもで言うとsetoptionに対してそんなに時間のかかることをするとGUI側がtimeoutになる懸念もある。
 		// Stockfishもこうすべきだと思う。
 
-		// o["Threads"] << Option(1, 1, 32, [](const Option& o) { /* Threads.set(o); */ });
-		o["Threads"] << Option(1, 1, 32, [](const Option& o) { Threads.set(size_t(o)); });
+		// yaneuraou.wasm
+		// スレッド数などの調整
+		// stockfish.wasmの数値を基本的に使用している
+		//
+
+		o["Threads"] << Option(1, 1, 32, [](const Option& o) { /* Threads.set(o); */ });
 #endif
 
 #if !defined(TANUKI_MATE_ENGINE) && !defined(YANEURAOU_MATE_ENGINE)

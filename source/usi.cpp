@@ -302,6 +302,9 @@ u64 eval_sum;
 // 局面は初期化されないので注意。
 void is_ready(bool skipCorruptCheck)
 {
+  // yaneuraou.wasm
+	// ブラウザのメインスレッドをブロックしないよう、Keep Alive処理をコメントアウト
+	//
 
 	// --- Keep Alive的な処理 ---
 
@@ -318,10 +321,10 @@ void is_ready(bool skipCorruptCheck)
 	// 確認してから処理を行う。
 
 	// スレッドが起動したことを通知するためのフラグ
-	auto thread_started = false;
+	// auto thread_started = false;
 
 	// この関数を抜ける時に立つフラグ(スレッドを停止させる用)
-	auto thread_end = false;
+	// auto thread_end = false;
 
 
 	// // 定期的な改行送信用のスレッド
@@ -559,17 +562,21 @@ void go_cmd(const Position& pos, istringstream& is , StateListPtr& states , bool
 	bool ponderMode = false;
 
 	auto main_thread = Threads.main();
-	if (!states)
-	{
-		// 前回から"position"コマンドを処理せずに再度goが呼び出された。
-		// 前回、ponderでStochastic Ponderのために局面を壊してしまっている可能性があるので復元しておく。
-		// (これがStochastic Ponderの一番簡単な実装)
-		// Stochastic Ponderのために局面を2手前に戻して、そのあと現在の局面に対するコマンド("d"など)を実行すると
-		// それは2手前の局面が表示されるが、それは仕様であるものとする。(これを修正するとプログラムのフローが複雑になる)
-		istringstream iss(main_thread->last_position_cmd_string);
-		iss >> token; // "position"
-		position_cmd(*const_cast<Position*>(&pos), iss, states);
-	}
+
+	// yaneuraou.wasm
+	// 複数回"go"コマンドが呼ばれた際に誤って初期化されてしまうため、コメントアウト
+
+	// if (!states)
+	// {
+	// 	// 前回から"position"コマンドを処理せずに再度goが呼び出された。
+	// 	// 前回、ponderでStochastic Ponderのために局面を壊してしまっている可能性があるので復元しておく。
+	// 	// (これがStochastic Ponderの一番簡単な実装)
+	// 	// Stochastic Ponderのために局面を2手前に戻して、そのあと現在の局面に対するコマンド("d"など)を実行すると
+	// 	// それは2手前の局面が表示されるが、それは仕様であるものとする。(これを修正するとプログラムのフローが複雑になる)
+	// 	istringstream iss(main_thread->last_position_cmd_string);
+	// 	iss >> token; // "position"
+	// 	position_cmd(*const_cast<Position*>(&pos), iss, states);
+	// }
 
 	// 思考開始時刻の初期化。なるべく早い段階でこれをしておかないとサーバー時間との誤差が大きくなる。
 	Time.reset();
