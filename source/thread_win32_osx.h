@@ -16,12 +16,12 @@
 // スレッドのデフォルトスタックサイズが小さい環境で、
 // 少なくとも8MB確保するためのthread生成のためのwrapper
 
-#if defined(__APPLE__) || defined(__MINGW32__) || defined(__MINGW64__) || defined(USE_PTHREADS) || defined(__EMSCRIPTEN__)
+#if defined(__APPLE__) || defined(__MINGW32__) || defined(__MINGW64__) || defined(USE_PTHREADS)
 
 #include <pthread.h>
 
 // 少なくともこのサイズのスタック領域を確保したい
-static const size_t TH_STACK_SIZE = 1 * 1024 * 1024;
+static const size_t TH_STACK_SIZE = 8 * 1024 * 1024;
 
 template <class T, class P = std::pair<T*, void(T::*)()>>
 void* start_routine(void* ptr)
@@ -42,10 +42,7 @@ public:
         pthread_attr_t attr_storage, * attr = &attr_storage;
         pthread_attr_init(attr);
         pthread_attr_setstacksize(attr, TH_STACK_SIZE);
-        // pthread_create(&thread, attr, start_routine<T>, new P(obj, fun));
-        int error = pthread_create(&thread, attr, start_routine<T>, new P(obj, fun));
-        if (error)
-            abort();
+        pthread_create(&thread, attr, start_routine<T>, new P(obj, fun));
     }
     void join() { pthread_join(thread, NULL); }
 };

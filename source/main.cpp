@@ -29,7 +29,8 @@ int main(int argc, char* argv[])
 	Eval::init();
 
   // YaneuraOu.wasm
-	// ここでループしてしまうと、ブラウザのメインスレッドもブロックされてしまうので、コメントアウト
+	// ここでループしてしまうと、ブラウザのメインスレッドがブロックされてしまうため、コメントアウト
+
 	// USI::loop(argc, argv);
 	// Threads.set(0);
 
