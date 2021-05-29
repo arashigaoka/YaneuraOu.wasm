@@ -115,6 +115,9 @@ void Thread::idle_loop() {
 // スレッド数を変更する。
 void ThreadPool::set(size_t requested)
 {
+	// yaneuraou.wasm
+	// ブラウザのメインスレッドをブロックしないようstockfish.wasmと同様の実装に修正
+	//
 
   if (size() == requested)
       return;
@@ -127,11 +130,9 @@ void ThreadPool::set(size_t requested)
 	}
 
 	if (requested > 0) { // 要求された数だけのスレッドを生成
-		// push_back(new MainThread(0));
 
 		while (size() < requested)
       push_back(size() ? new Thread(size()) : new MainThread(0));
-			// push_back(new Thread(size()));
 		clear();
 
 		// Reallocate the hash with the new threadpool size
