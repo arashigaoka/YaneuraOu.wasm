@@ -2,10 +2,13 @@
 <script>
   YaneuraOu().then((sf) => {
     window.sf = sf;
-
-    var depth = 5;
-    var listener = function (line) {
+    let isReady = false;
+    let depth = 5;
+    const listener = function (line) {
       console.log(">", line);
+      if (line === "readyok") {
+        isReady = true;
+      }
       if (line.includes("bestmove") && depth < 20) {
         depth++;
         console.log("============ DEPTH " + depth + " ============");
@@ -14,31 +17,25 @@
     };
 
     sf.addMessageListener(listener);
-    // sf.removeMessageListener(listener);
 
     sf.postMessage("usi");
-    // sf.postMessage('setoption name UCI_AnalyseMode value true');
-    // sf.postMessage('setoption name Analysis Contempt value Off');
-    var hardwareConcurrency = navigator.hardwareConcurrency;
+    const hardwareConcurrency = navigator.hardwareConcurrency;
     console.log("your hardware concurrency is " + hardwareConcurrency);
-    console.log("============ START ============");
     setTimeout(() => {
       sf.postMessage("setoption name USI_Ponder value false");
       sf.postMessage("setoption name USI_OwnBook value false");
       sf.postMessage("setoption name USI_Hash value 1024");
-      console.log("set threads");
       sf.postMessage(`setoption name Threads value ${hardwareConcurrency}`);
-      console.log("isready");
       sf.postMessage("isready");
-    }, 3000);
-    setTimeout(() => {
-      console.log("position");
-      sf.postMessage(
-        "position sfen ln1g5/1r4k2/p2pppn2/2ps2p2/1p7/2P6/PPSPPPPLP/2G2K1pr/LN4G1b b BG2SLPnp 1"
-      );
-      console.log("go");
-      sf.postMessage("go btime 0 wtime 0 byoyomi 30");
-      // sf.postMessage("go depth " + depth);
-    }, 10000);
+    }, 1);
+    setInterval(() => {
+      if (isReady) {
+        sf.postMessage(
+          "position sfen ln1g5/1r4k2/p2pppn2/2ps2p2/1p7/2P6/PPSPPPPLP/2G2K1pr/LN4G1b b BG2SLPnp 1"
+        );
+        sf.postMessage("go depth " + depth);
+        isReady = false;
+      }
+    }, 1000);
   });
 </script>

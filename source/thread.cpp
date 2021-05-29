@@ -104,9 +104,6 @@ void Thread::idle_loop() {
 void ThreadPool::set(size_t requested)
 {
 
-  sync_cout << size() << sync_endl;
-  sync_cout << requested << sync_endl;
-
   if (size() == requested)
       return;
 
