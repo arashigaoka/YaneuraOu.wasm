@@ -15,13 +15,19 @@ Cross-Origin-Embedder-Policy: require-corp
 Cross-Origin-Opener-Policy: same-origin
 ```
 
-# Limitation
+# Spec
+
+- Hashtable: 1024 MB. You may want to check `navigator.deviceMemory` before allocating.
+- Threads: 32. You may want to check `navigator.hardwareConcurrency`. May be capped lower (e.g., dom.workers.maxPerDomain in Firefox).
+- Evaluation function: This project uses https://github.com/yaneurao/YaneuraOu/releases/tag/20190115_k-p-256-32-32 for tiny size
+
+# Browser
 
 This project uses WebAssembly SIMD. you will need to use the following browsers.
 
 ## Chrome
 
-Since Chromium 91
+Since Chrome 91
 
 ## Firefox
 
