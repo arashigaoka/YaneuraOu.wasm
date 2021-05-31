@@ -241,7 +241,7 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 .vscode/
-yaneuraou.js
-yaneuraou.data
-yaneuraou.wasm
-yaneuraou.worker.js
+# yaneuraou.js
+# yaneuraou.data
+# yaneuraou.wasm
+# yaneuraou.worker.js
