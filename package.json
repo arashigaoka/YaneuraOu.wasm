@@ -1,6 +1,6 @@
 {
   "name": "yaneuraou.wasm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "WebAssembly port of the strong shogi engine YaneuraOu",
   "keywords": ["shogi","emscripten", "webassembly"],
   "author": "Yuta Okumura",

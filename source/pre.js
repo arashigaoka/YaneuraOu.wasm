@@ -59,8 +59,4 @@
     };
     poll();
   };
-
-  Module["locateFile"] = function (path) {
-    return "https://unpkg.com/yaneuraou.wasm/" + path;
-  };
 })();
