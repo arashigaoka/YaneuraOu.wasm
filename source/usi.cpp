@@ -135,7 +135,12 @@ namespace USI
 	std::string pv(const Position& pos, Depth depth, Value alpha, Value beta)
 	{
 		std::stringstream ss;
-		TimePoint elapsed = Time.elapsed() + 1;
+		/
+  // yaneuraou.wasm
+	// Time.elapsed()が-1を返すことがある
+	// https://github.com/niklasf/stockfish.wasm/commit/4f591186650ab9729705dc01dec1b2d099cd5e29
+
+    long elapsed = std::max((long)Time.elapsed(), 1L);
 
 		const auto& rootMoves = pos.this_thread()->rootMoves;
 		size_t pvIdx = pos.this_thread()->pvIdx;
